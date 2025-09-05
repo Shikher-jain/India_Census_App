@@ -9,6 +9,7 @@ def load_data():
 
 df = load_data()
 
+
 STATES = df['State'].unique().tolist()
 STATES.insert(0, "Overall INDIA")
 
@@ -19,6 +20,20 @@ st.sidebar.title("GeoSpatial Data Visualization")
 selected_state = st.sidebar.selectbox("Select a State", STATES)
 primary = st.sidebar.selectbox("Select a Primary Parameter", COLS)
 secondary = st.sidebar.selectbox("Select a Secondary Parameter", COLS)
+
+placeholder = st.empty()
+placeholder.info("Select parameters and click 'Generate Plot' to see the visualization.")
+default_map = px.scatter_mapbox(
+    df,
+    lat="Latitude",
+    lon="Longitude",
+    hover_name="District",
+    zoom=3,
+    opacity=0.3,
+    mapbox_style="open-street-map"
+
+)
+st.plotly_chart(default_map)
 
 if st.sidebar.button("Generate Plot"):
     state_data = df if selected_state == "Overall INDIA" else df[df['State'] == selected_state]
@@ -39,4 +54,5 @@ if st.sidebar.button("Generate Plot"):
             zoom=zoom_level,
             mapbox_style="open-street-map"
         )
+        placeholder.empty()
         st.plotly_chart(fig)
